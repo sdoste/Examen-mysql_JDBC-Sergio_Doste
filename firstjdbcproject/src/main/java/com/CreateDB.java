@@ -5,6 +5,9 @@ import java.util.Scanner;
 public class CreateDB {
     public static void main(String[] args){
         
+        //6- JDBC: usa tu propia plantilla JDBC o la que te pase el profesor. Realiza una consulta para ver todos
+            //los titulos y los autores de todos los libros desde un statement normal directo.
+            
         try {
             //Conexión
 
@@ -12,7 +15,7 @@ public class CreateDB {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             //Conectar con DB específica. Crear objeto Connection
-            Connection conexion1 = DriverManager.getConnection("jdbc:mysql://localhost:3306/empleadojpa", "root", "admin");
+            Connection conexion1 = DriverManager.getConnection("jdbc:mysql://localhost:3306/examen", "root", "admin");
 
             //Crear objeto Statement para consultas
             Statement stat1 = conexion1.createStatement();
@@ -20,100 +23,66 @@ public class CreateDB {
             //Ejecutar instrucciones SQL (executeQuery y executeUpdate) y guardarlo en Resultset
 
             //ver todo
-            ResultSet resultado1 = stat1.executeQuery("SELECT * FROM empleado");
+            ResultSet resultado1 = stat1.executeQuery("SELECT titulo, autor FROM libros");
 
             //Recorrer resultado
             while(resultado1.next()){
-                System.out.println(resultado1.getString("nombre_empleado"));
+                System.out.println("Título: " + resultado1.getString("titulo") );
+                System.out.println("Autor: " + resultado1.getString("autor")+ "\n");
             }
            
             conexion1.close();
 
+            
         } catch(Exception e){
             //Mensaje de error
             System.out.println("**** Conexión1 fallida ****");
             e.printStackTrace();
         }
 
-        // try{
-        //     //Driver
-        //     Class.forName("com.mysql.cj.jdbc.Driver");
-
-        //     //DB
-        //     Connection conexion2 = DriverManager.getConnection("jdbc:mysql://localhost:3306/empleadojpa", "root", "admin");
-
-        //     //Statement para consultas
-        //     Statement stat2 = conexion2.createStatement();
-
-        //     //Insertar Datos
-        //     String insertar = "INSERT INTO empleado (id, edad, direccion, nombre_empleado, puesto) VALUES (51, 20, 'Cbotijo', 'Brienne', 'PM')";
-        //     stat2.executeUpdate(insertar);
-        //     System.out.println("¡Datos insertados!");
-
-        //     //Actualizar 
-        //     String actualizar = "UPDATE empleado SET nombre_empleado='Bobby' WHERE id=10";
-        //     stat2.executeUpdate(actualizar);
-
-        //     //Eliminar registros
-        //     String borrar = "DELETE FROM empleado WHERE id=50";
-        //     stat2.executeUpdate(borrar);
-
-        // } catch(Exception e){
-        //     //Mensaje de error
-        //     System.out.println("**** Conexión2 fallida ****");
-        //     e.printStackTrace();
-        // }
-
+        // 7- JDBC. Sobre esa misma plantilla, realiza un insert con un PreparedStatement para registrar una
+        //     nueva fila la en en la tabla Clientes. Verifica que aparece el nuevo libro en la base de datos.
+        //"nuevo libro"?? Imagino que es un error, añado cliente"
+        
         try{
             //Driver
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             //DB
-            Connection conexion2 = DriverManager.getConnection("jdbc:mysql://localhost:3306/empleadojpa", "root", "admin");
+            Connection conexion2 = DriverManager.getConnection("jdbc:mysql://localhost:3306/examen", "root", "admin");
 
             //Statement para consultas
             Statement stat2 = conexion2.createStatement();
 
-            //Insertar Datos
-            // String insertar = "INSERT INTO empleado (id, edad, direccion, nombre_empleado, puesto) VALUES (51, 20, 'Cbotijo', 'Brienne', 'PM')";
-            // stat2.executeUpdate(insertar);
-            // System.out.println("¡Datos insertados!");
-
+            String insertar = "INSERT INTO `clientes` (`nombre`, `e-mail`) VALUES (?,?)";
+            
+            //Pedimos datos por el Scanner
             Scanner sc = new Scanner(System.in);
 
-            System.out.println("Introduce id");
-            Integer idempleado = Integer.parseInt(sc.nextLine());
-            System.out.println(idempleado);
-            
-            System.out.println("Introduce la edad");
-            Integer edadempleado = Integer.parseInt(sc.nextLine());
-            System.out.println(edadempleado);
+            //ID AUTOINCREMENTAL, SE AÑADE SOLO ASÍ QUE NO HACE FALTA PEDIRLO
+            // System.out.println("Introduce el id del cliente");
+            // Integer idcliente = Integer.parseInt(sc.nextLine());
+            // System.out.println(idcliente);
 
-            // System.out.println("Introduce el nombre");
-            // String nombreempleado = sc.nextLine();
+            System.out.println("Introduce el nombre del cliente");
+            String nombrecliente = sc.nextLine();
+            System.out.println(nombrecliente);
             
-            // System.out.println("Introduce el puesto");
-            // String puestoempleado = sc.nextLine();  
-            
+            System.out.println("Introduce el e-mail del cliente");
+            String emailcliente = sc.nextLine();
+            System.out.println(emailcliente);
+
+            PreparedStatement prep = conexion2.prepareStatement(insertar);
+            // prep.setInt(1, idcliente); 
+            prep.setString(1, nombrecliente); 
+            prep.setString(2, emailcliente);
+        
+
+            prep.executeUpdate();
+            System.out.println("¡Datos insertados!");
+    
+
             sc.close();
-
-            String actualizar = "UPDATE empleado SET edad = ? WHERE id = ?";
-
-            PreparedStatement prep = conexion2.prepareStatement(actualizar);
-            prep.setInt(1, edadempleado); 
-            prep.setInt(2, idempleado);
-            
-            
-            // String actualizarTitulo = "UPDATE empleado SET nombre_empleado = ? WHERE id = ?";
-
-
-            // //Actualizar 
-            // String actualizar = "UPDATE empleado SET nombre_empleado='Bobby' WHERE id=10";
-            // stat2.executeUpdate(actualizar);
-
-            // //Eliminar registros
-            // String borrar = "DELETE FROM empleado WHERE id=50";
-            // stat2.executeUpdate(borrar);
 
         } catch(Exception e){
             //Mensaje de error

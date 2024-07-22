@@ -1,8 +1,89 @@
+1- (2 ptos) Crea dos tablas: LIBROS y CLIENTES
+
 CREATE SCHEMA `examen` ;
 
 CREATE TABLE `examen`.`libros` (
-  `idLibros` INT NOT NULL AUTO_INCREMENT,
+  `id_libros` INT NOT NULL AUTO_INCREMENT,
+  `titulo` VARCHAR(65) NULL,
+  `autor` VARCHAR(45) NULL,
+  `ano_publicacion` INT NULL,
+  PRIMARY KEY (`id_libros`),
+  UNIQUE INDEX `id_libros_UNIQUE` (`id_libros` ASC) VISIBLE);
+
+CREATE TABLE `examen`.`clientes` (
+  `id_clientes` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NULL,
   `e-mail` VARCHAR(45) NULL,
-  PRIMARY KEY (`idLibros`),
-  UNIQUE INDEX `idLibros_UNIQUE` (`idLibros` ASC) VISIBLE);
+  PRIMARY KEY (`idClientes`),
+  UNIQUE INDEX `idClientes_UNIQUE` (`idClientes` ASC) VISIBLE)
+COMMENT = '			';
+
+
+2- Relaciona ambas tablas (un cliente, muchos libros)
+
+ALTER TABLE `examen`.`libros` 
+ADD COLUMN `id_cliente` INT NULL AFTER `ano_publicacion`,
+ADD INDEX `id_cliente_idx` (`id_cliente` ASC) VISIBLE;
+;
+ALTER TABLE `examen`.`libros` 
+ADD CONSTRAINT `id_cliente`
+  FOREIGN KEY (`id_cliente`)
+  REFERENCES `examen`.`clientes` (`id_clientes`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+
+4- Rellena los datos en ambas tablas, al menos 5  las de libros y 3 de clientes
+
+INSERT INTO `examen`.`clientes` (`id_clientes`, `nombre`, `e-mail`) VALUES ('1', 'Elena Díaz', 'elena.diaz@gmail.com');
+INSERT INTO `examen`.`clientes` (`id_clientes`, `nombre`, `e-mail`) VALUES ('2', 'Teresa Muñoz', 'teresa.munoz@hotmail.com');
+INSERT INTO `examen`.`clientes` (`id_clientes`, `nombre`, `e-mail`) VALUES ('3', 'Silvia Ramos', 'silvia.ramos@yahoo.es');
+INSERT INTO `examen`.`clientes` (`id_clientes`, `nombre`, `e-mail`) VALUES ('4', 'Nuria Alonso', 'nuria.alonso@gmail.com');
+INSERT INTO `examen`.`clientes` (`id_clientes`, `nombre`, `e-mail`) VALUES ('5', 'Ana García', 'ana.garcia@gmail.com');
+
+INSERT INTO `examen`.`libros` (`id_libros`, `titulo`, `autor`, `ano_publicacion`, `id_cliente`) VALUES ('1', 'La sombra del viento', 'Carlos Ruiz Zafón', '2001', '2');
+INSERT INTO `examen`.`libros` (`id_libros`, `titulo`, `autor`, `ano_publicacion`, `id_cliente`) VALUES ('2', 'El tatuador de Auschwitz', 'Heather Morris', '2018 ', '2');
+INSERT INTO `examen`.`libros` (`id_libros`, `titulo`, `autor`, `ano_publicacion`, `id_cliente`) VALUES ('3', 'El día que se perdió la cordura', 'Javier Castillo', '2017', '1');
+INSERT INTO `examen`.`libros` (`id_libros`, `titulo`, `autor`, `ano_publicacion`, `id_cliente`) VALUES ('4', 'El camino', 'Miguel Delibes', '1950', '3');
+INSERT INTO `examen`.`libros` (`id_libros`, `titulo`, `autor`, `ano_publicacion`, `id_cliente`) VALUES ('5', 'La colmena', 'Camilo José Cela', '1951', '5');
+
+
+5- (4 ptos) Realiza las siguientes consultas:
+5.1- Obtener los libros publicados después de 2005:
+SELECT * FROM examen.libros
+WHERE ano_publicacion > 2005;
+
+5.2- Obtener los clientes cuyo nombre contiene la letra “e”:
+SELECT * FROM examen.clientes
+WHERE nombre LIKE ('%e%');
+
+5.3- Contar el número total de libros
+SELECT COUNT(*) AS 'nº total de libros' FROM examen.libros
+
+5.4- ¿Cuál es el título del libro con el ID 3?
+SELECT id_libros, titulo FROM examen.libros
+WHERE id_libros = 3;
+
+
+5.5- ¿Cuántos clientes tienen una dirección de correo electrónico que termina en “@gmail.com”?
+SELECT COUNT(*) AS 'nº usuarios con correo gmail' FROM examen.clientes
+WHERE `e-mail` LIKE '%@gmail.com';
+
+5.6- ¿Cuál es el título del libro más antiguo?
+SELECT titulo, ano_publicacion
+FROM examen.libros
+ORDER BY(ano_publicacion)
+LIMIT 1;
+
+
+5.7- JOIN: Obtener los libros junto con los nombres de los clientes que los poseen
+SELECT l.titulo, l.autor, l.ano_publicacion, c.nombre AS 'nombre_cliente'
+FROM examen.libros l
+INNER JOIN clientes c ON l.id_cliente=c.id_clientes;
+
+5.8- JOIN: Obtener los clientes que no tienen libros
+
+SELECT c.nombre AS 'nombre_cliente'
+FROM examen.clientes c
+LEFT JOIN examen.libros l ON c.id_clientes = l.id_cliente
+WHERE l.id_cliente IS NULL;
