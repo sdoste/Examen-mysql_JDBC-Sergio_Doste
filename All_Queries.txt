@@ -82,8 +82,7 @@ FROM examen.libros l
 INNER JOIN clientes c ON l.id_cliente=c.id_clientes;
 
 5.8- JOIN: Obtener los clientes que no tienen libros
-
-SELECT c.nombre AS 'nombre_cliente'
+SELECT c.nombre AS 'clientes sin libros'
 FROM examen.clientes c
-LEFT JOIN examen.libros l ON c.id_clientes = l.id_cliente
-WHERE l.id_cliente IS NULL;
+LEFT JOIN libros l ON c.id_clientes = l.id_cliente
+WHERE id_libros IS NULL;
