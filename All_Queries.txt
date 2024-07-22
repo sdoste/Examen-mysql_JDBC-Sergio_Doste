@@ -1,0 +1,8 @@
+CREATE SCHEMA `examen` ;
+
+CREATE TABLE `examen`.`libros` (
+  `idLibros` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NULL,
+  `e-mail` VARCHAR(45) NULL,
+  PRIMARY KEY (`idLibros`),
+  UNIQUE INDEX `idLibros_UNIQUE` (`idLibros` ASC) VISIBLE);
