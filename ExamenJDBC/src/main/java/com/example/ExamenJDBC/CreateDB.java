@@ -1,4 +1,4 @@
-package com;
+package com.example.ExamenJDBC;
 
 import java.sql.*;
 import java.util.Scanner;
